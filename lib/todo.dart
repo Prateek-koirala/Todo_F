@@ -11,10 +11,7 @@ class ToDo extends StatefulWidget {
 
 class _ToDoState extends State<ToDo> {
   final _controller = TextEditingController();
-  List toDoList = [
-    ["Make Tutorial", false],
-    ["Do Exercise", false],
-  ];
+  List toDoList = [];
 
   void checkBoxChanged(bool? value, int index) {
     setState(() {
@@ -81,6 +78,54 @@ class _ToDoState extends State<ToDo> {
             taskCompleted: toDoList[index][1],
             onChanged: (value) => checkBoxChanged(value, index),
             deleteFunction: (context) => deleteTask(index),
+            onUpdate: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  TextEditingController editingController =
+                      TextEditingController(text: toDoList[index][0]);
+                  return AlertDialog(
+                    backgroundColor: Colors.yellow[300],
+                    title: Text('Edit Task'),
+                    content: TextField(
+                      controller: editingController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Edit Task Name",
+                      ),
+                    ),
+                    actions: [
+                      ElevatedButton(
+                        onPressed: () {
+                          String editedTask = editingController.text.trim();
+                          if (editedTask.isNotEmpty) {
+                            setState(() {
+                              toDoList[index][0] = editedTask;
+                            });
+                            Navigator.of(context).pop();
+                          } else {
+                            // Show a snackbar or dialog indicating that the task name cannot be empty
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Task name cannot be empty.'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },
+                        child: Text('Save'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Cancel'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
           );
         },
       ),

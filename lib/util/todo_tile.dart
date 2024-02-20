@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:todo_app/util/my_button.dart';
 
 class ToDoTile extends StatelessWidget {
   final String taskName;
   final bool taskCompleted;
   final Function(bool?)? onChanged;
   Function(BuildContext)? deleteFunction;
+  VoidCallback? onUpdate;
 
   ToDoTile({
     super.key,
@@ -13,6 +15,7 @@ class ToDoTile extends StatelessWidget {
     required this.taskCompleted,
     required this.onChanged,
     required this.deleteFunction,
+    this.onUpdate,
   });
 
   @override
@@ -53,6 +56,21 @@ class ToDoTile extends StatelessWidget {
                       ? TextDecoration.lineThrough
                       : TextDecoration.none,
                 ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  //save button
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MyButton(
+                      text: "Update",
+                      onPressed: () {
+                        onUpdate?.call();
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
